@@ -1,0 +1,20 @@
+const connectButton = document.getElementById("connect");
+const statusText = document.getElementById("status");
+
+connectButton.addEventListener("click", async () => {
+  if (!window.phantom?.solana) {
+    statusText.textContent =
+      "Phantom not detected. Open this website in Phantom's browser.";
+    return;
+  }
+
+  try {
+    const response = await window.phantom.solana.connect();
+
+    statusText.textContent =
+      "Connected: " + response.publicKey.toString();
+
+  } catch (error) {
+    statusText.textContent = "Wallet connection cancelled.";
+  }
+});
