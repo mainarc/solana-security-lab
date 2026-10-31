@@ -12,6 +12,7 @@
   <button id="connect">Connect Phantom</button>
   <p id="status">Wallet not connected</p>
 
+
   <script>
     document.getElementById("connect").onclick = async () => {
       if (!window.phantom?.solana) {
