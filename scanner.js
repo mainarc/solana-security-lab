@@ -1,38 +1,20 @@
- const DANGEROUS_INSTRUCTIONS = [
-  "approve",
-  "setAuthority",
-  "transfer",
-  "transferChecked",
-  "closeAccount"
-]; 
-
-function scanTransaction(transaction) {
+ function scanTokenAccounts(accounts) {
   const findings = [];
 
-  for (const instruction of transaction.instructions || []) {
-    const name = instruction.name || "unknown";
+  for (const account of accounts) {
+    const info = account.account.data.parsed.info;
 
-    if (DANGEROUS_INSTRUCTIONS.includes(name)) {
+    if (info.delegate && Number(info.delegatedAmount.amount) > 0) {
       findings.push({
-        instruction: name,
+        type: "Token delegate",
+        account: account.pubkey.toString(),
+        delegate: info.delegate,
+        amount: info.delegatedAmount.amount,
         risk: "REVIEW",
-        message: `Inspect this instruction: ${name}`
+        message: "This token account has an active delegate."
       });
     }
   }
 
-  return {
-    safe: findings.length === 0,
-    findings
-  };
+  return findings;
 }
-
-// Example test
-const testTransaction = {
-  instructions: [
-    { name: "approve" },
-    { name: "transfer" }
-  ]
-};
-
-console.log(scanTransaction(testTransaction));
