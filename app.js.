@@ -1,20 +1,35 @@
 const connectButton = document.getElementById("connect");
+const scanButton = document.getElementById("scan");
+
 const statusText = document.getElementById("status");
+const scanResult = document.getElementById("scanResult");
+
+let walletAddress = null;
 
 connectButton.addEventListener("click", async () => {
-  if (!window.phantom?.solana) {
-    statusText.textContent =
-      "Phantom not detected. Open this website in Phantom's browser.";
+  try {
+    if (!window.phantom?.solana) {
+      statusText.textContent = "Open this site in Phantom's browser.";
+      return;
+    }
+
+    const response = await window.phantom.solana.connect();
+
+    walletAddress = response.publicKey.toString();
+
+    statusText.textContent = "Connected: " + walletAddress;
+  } catch (error) {
+    statusText.textContent = "Connection cancelled.";
+  }
+});
+
+scanButton.addEventListener("click", async () => {
+  if (!walletAddress) {
+    scanResult.textContent = "Connect your wallet first.";
     return;
   }
 
-  try {
-    const response = await window.phantom.solana.connect();
+  scanResult.textContent = "Wallet connected. Preparing security scan...";
 
-    statusText.textContent =
-      "Connected: " + response.publicKey.toString();
-
-  } catch (error) {
-    statusText.textContent = "Wallet connection cancelled.";
-  }
+  console.log("Wallet ready for inspection:", walletAddress);
 });
