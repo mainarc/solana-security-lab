@@ -1,0 +1,28 @@
+body {
+  background: #0b1020;
+  color: white;
+  font-family: Arial, sans-serif;
+  padding: 25px;
+}
+
+h1 {
+  color: #8b9cff;
+}
+
+button {
+  background: #7658ff;
+  color: white;
+  padding: 14px 22px;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+}
+
+button:active {
+  opacity: 0.7;
+}
+
+#status {
+  margin-top: 20px;
+  color: #a5b4fc;
+}
