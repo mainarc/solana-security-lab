@@ -1,4 +1,4 @@
-const DANGEROUS_INSTRUCTIONS = [
+ const DANGEROUS_INSTRUCTIONS = [
   "approve",
   "setAuthority",
   "transfer",
