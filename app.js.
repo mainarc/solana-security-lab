@@ -1,3 +1,8 @@
+const connection = new solanaWeb3.Connection(
+  "https://api.devnet.solana.com",
+  "confirmed"
+);
+
 const connectButton = document.getElementById("connect");
 const scanButton = document.getElementById("scan");
 
