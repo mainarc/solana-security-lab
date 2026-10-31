@@ -4,7 +4,7 @@
   "transfer",
   "transferChecked",
   "closeAccount"
-];
+]; 
 
 function scanTransaction(transaction) {
   const findings = [];
