@@ -13,28 +13,59 @@ let walletAddress = null;
 
 connectButton.addEventListener("click", async () => {
   try {
-    if (!window.phantom?.solana) {
-      statusText.textContent = "Open this site in Phantom's browser.";
+    const provider =
+      window.phantom?.solana || window.solana;
+
+    if (!provider?.isPhantom) {
+      statusText.textContent =
+        "Open this website in Phantom's browser.";
       return;
     }
 
-    const response = await window.phantom.solana.connect();
+    const response = await provider.connect();
 
     walletAddress = response.publicKey.toString();
 
-    statusText.textContent = "Connected: " + walletAddress;
+    statusText.textContent =
+      "Connected: " + walletAddress;
   } catch (error) {
-    statusText.textContent = "Connection cancelled.";
+    statusText.textContent = error.message;
   }
 });
 
 scanButton.addEventListener("click", async () => {
   if (!walletAddress) {
-    scanResult.textContent = "Connect your wallet first.";
+    scanResult.textContent = "Connect wallet first.";
     return;
   }
 
-  scanResult.textContent = "Wallet connected. Preparing security scan...";
+  try {
+    scanResult.textContent = "Scanning Devnet...";
 
-  console.log("Wallet ready for inspection:", walletAddress);
+    const publicKey = new solanaWeb3.PublicKey(walletAddress);
+
+    const balance = await connection.getBalance(publicKey);
+
+    const accounts =
+      await connection.getParsedTokenAccountsByOwner(
+        publicKey,
+        {
+          programId: new solanaWeb3.PublicKey(
+            "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+          )
+        }
+      );
+
+    const findings = scanTokenAccounts(accounts.value);
+
+    scanResult.textContent =
+      `SOL balance: ${balance / solanaWeb3.LAMPORTS_PER_SOL}
+      | Token accounts: ${accounts.value.length}
+      | Active delegates: ${findings.length}`;
+
+    console.log("Security findings:", findings);
+
+  } catch (error) {
+    scanResult.textContent = "Scan failed: " + error.message;
+  }
 });
