@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Solana Security Lab</title>
+</head>
+<body>
+  <h1>Solana Security Lab</h1>
+  <p>Wallet security scanner</p>
+  <button id="connect">Connect Phantom</button>
+  <p id="status">Wallet not connected</p>
+
+  <script>
+    document.getElementById("connect").onclick = async () => {
+      if (!window.phantom?.solana) {
+        document.getElementById("status").textContent =
+          "Phantom not detected. Open in Phantom browser.";
+        return;
+      }
+
+      try {
+        const wallet = await window.phantom.solana.connect();
+        document.getElementById("status").textContent =
+          "Connected: " + wallet.publicKey.toString();
+      } catch (error) {
+        document.getElementById("status").textContent =
+          "Connection cancelled.";
+      }
+    };
+  </script>
+</body>
+</html>
